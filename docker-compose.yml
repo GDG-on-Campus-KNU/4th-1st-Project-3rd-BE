@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: persona-chat-server
+    env_file:
+      - ${ENV_FILE}
+    depends_on:
+      - database
+      - redis
+    ports:
+      - ${SPRING_PORT}:${SPRING_PORT}
+    restart: no
+
+  database:
+    image: mysql:8.4.4
+    container_name: persona-chat-database
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    command:
+      --port=${DB_PORT} --max_allowed_packet=32M
+    expose:
+      - ${DB_PORT}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    restart: no
+    volumes:
+      - persona-chat-database:/var/lib/mysql
+
+  redis:
+    image: redis:7.0
+    container_name: persona-chat-redis
+    command: --port ${REDIS_PORT} --requirepass ${REDIS_PASSWORD}
+    expose:
+      - ${REDIS_PORT}
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    restart: always
+    volumes:
+      - persona-chat-redis:/data
+volumes:
+  persona-chat-database:
+  persona-chat-redis:
