@@ -2,7 +2,7 @@ package GDG4th.personaChat.chat.presentation;
 
 import GDG4th.personaChat.chat.application.ChatService;
 import GDG4th.personaChat.chat.application.dto.MessageInfo;
-import GDG4th.personaChat.chat.presentation.dto.MesageRequest;
+import GDG4th.personaChat.chat.presentation.dto.MessageRequest;
 import GDG4th.personaChat.chat.presentation.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class ChatController {
 
     // Todo 유저 정보 가져오는 부분 필요
     @GetMapping("/{mbti}")
-    public ResponseEntity<?> getChatLog(
+    public ResponseEntity<List<MessageResponse>> getChatLog(
             @RequestParam int lastOrder,
             @PathVariable String mbti
     ) {
@@ -30,11 +30,11 @@ public class ChatController {
 
     // Todo 유저 정보 가져오는 부분 필요
     @PostMapping("/{mbti}")
-    public ResponseEntity<?> postChat(
-            @RequestBody MesageRequest mesageRequest,
+    public ResponseEntity<Void> postChat(
+            @RequestBody MessageRequest messageRequest,
             @PathVariable String mbti
     ) {
-        chatService.receiveUserMessage(1L, "mbti", mesageRequest.content());
+        chatService.receiveUserMessage(1L, "mbti", messageRequest.content());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
