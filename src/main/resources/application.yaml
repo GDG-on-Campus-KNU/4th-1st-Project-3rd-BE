@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: personaChat
+  data:
+    redis:
+      port: 6379
+      host: localhost
