@@ -11,7 +11,7 @@ services:
       - redis
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}
-    restart: no
+    restart: "no"
 
   database:
     image: mysql:8.4.4
@@ -27,7 +27,7 @@ services:
       - ${DB_PORT}
     ports:
       - ${DB_PORT}:${DB_PORT}
-    restart: no
+    restart: "no"
     volumes:
       - persona-chat-database:/var/lib/mysql
 
