@@ -39,7 +39,7 @@ services:
       - ${REDIS_PORT}
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
-    restart: always
+    restart: "no"
     volumes:
       - persona-chat-redis:/data
 volumes:
