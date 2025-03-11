@@ -36,3 +36,7 @@ spring:
         enable: true
   profiles:
     include: oauth
+
+verification:
+  max_failed_attempts: ${MAX_FAILED_ATTEMPTS}
+  default_expiry: ${DEFAULT_EXPIRY}
