@@ -25,5 +25,14 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
         dialect: org.hibernate.dialect.MySQLDialect
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      auth: true
+      starttls:
+        enable: true
   profiles:
     include: oauth
