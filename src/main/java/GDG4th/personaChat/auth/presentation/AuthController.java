@@ -1,6 +1,8 @@
 package GDG4th.personaChat.auth.presentation;
 
+import GDG4th.personaChat.auth.application.AuthService;
 import GDG4th.personaChat.auth.application.CustomOAuth2UserService;
+import GDG4th.personaChat.auth.presentation.dto.LoginRequest;
 import GDG4th.personaChat.auth.presentation.dto.RegisterRequest;
 import GDG4th.personaChat.auth.presentation.dto.RegisterResponse;
 import GDG4th.personaChat.user.application.UserService;
@@ -20,11 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request){
-        RegisterResponse response = RegisterResponse.from(userService.register(request));
+        RegisterResponse response = RegisterResponse.from(authService.register(request));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request){
+
+        authService.login(request);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
