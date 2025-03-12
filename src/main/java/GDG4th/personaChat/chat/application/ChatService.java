@@ -22,7 +22,7 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<MessageInfo> responseMessage(Long userId, int lastOrder) {
-        Chat savedChat = chatRepository.findByUserId(userId).orElseThrow(
+        Chat savedChat = chatRepository.findById(userId).orElseThrow(
                 () -> CustomException.of(ChatErrorCode.NO_CHAT_LOG)
         );
         List<Message> messages = savedChat.getMessages();
@@ -37,18 +37,18 @@ public class ChatService {
             throw CustomException.of(ChatErrorCode.NOT_VALIDATE_PARAM);
         }
 
-        List<Message> responseMessage = messages.subList(lastOrder, messages.size());
-
-        return responseMessage.stream()
-                .map(
-                    message -> new MessageInfo(
-                            message.getContent(),
-                            responseMessage.indexOf(message),
-                            message.isUserChat(),
-                            dateFormatting(message.getTimeStamp())
-                    )
+        List<MessageInfo> responseMessage = messages.stream().map(
+                        message -> new MessageInfo(
+                                message.getContent(),
+                                message.getOrder(),
+                                message.isUserChat(),
+                                dateFormatting(message.getTimeStamp())
+                        )
                 )
                 .toList();
+
+        return responseMessage.stream().skip(lastOrder).toList();
+
     }
 
     private String dateFormatting(LocalDateTime now) {
@@ -60,12 +60,12 @@ public class ChatService {
     @Transactional
     public void receiveUserMessage(Long userId, String mbti, String content) {
         // 특정 유저의 채팅을 조회
-        Optional<Chat> savedChat = chatRepository.findByUserId(userId);
+        Optional<Chat> savedChat = chatRepository.findById(userId);
 
         // 유저 채팅의 메세지 내용을 조회 ( 없으면 새로운 리스트 생성 )
         List<Message> messages = savedChat.map(Chat::getMessages).orElseGet(ArrayList::new);
         messages.add(
-                new Message(content, true, LocalDateTime.now())
+                new Message(content, true, messages.size(), LocalDateTime.now())
         );
 
         // Todo Trigger 로직 넣기 -> MongoDB로 전송
