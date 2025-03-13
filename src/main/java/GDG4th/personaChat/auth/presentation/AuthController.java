@@ -1,7 +1,6 @@
 package GDG4th.personaChat.auth.presentation;
 
 import GDG4th.personaChat.auth.application.AuthService;
-import GDG4th.personaChat.auth.application.CustomOAuth2UserService;
 import GDG4th.personaChat.auth.application.EmailVerificationService;
 import GDG4th.personaChat.auth.presentation.dto.*;
 import jakarta.servlet.http.HttpSession;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
-    private final CustomOAuth2UserService customOAuth2UserService;
     private final AuthService authService;
     private final EmailVerificationService emailVerificationService;
 
