@@ -13,5 +13,7 @@ public class Message implements Serializable {
 
     private boolean isUserChat;
 
+    private int order;
+
     private LocalDateTime timeStamp;
 }
