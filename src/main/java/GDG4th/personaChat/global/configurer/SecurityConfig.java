@@ -21,12 +21,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**", "/auth/**").permitAll() // 인증 없이 접근 가능 경로 추가
+                        .requestMatchers("/**").permitAll() // 인증 없이 접근 가능 경로 추가
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())
@@ -40,7 +40,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 허용할 Origin 패턴 설정
-        config.setAllowedOriginPatterns(List.of("http://localhost:5178", "https://ringus.my"));
+        config.setAllowedOriginPatterns(List.of("http://localhost:5178"));
 
         // 허용할 HTTP 메서드 설정
         config.setAllowedMethods(List.of(HttpMethod.GET.name(), HttpMethod.POST.name(),
