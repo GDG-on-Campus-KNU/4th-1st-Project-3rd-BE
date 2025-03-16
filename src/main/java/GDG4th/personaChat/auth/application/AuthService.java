@@ -5,6 +5,7 @@ import GDG4th.personaChat.auth.presentation.dto.LoginRequest;
 import GDG4th.personaChat.auth.presentation.dto.RegisterRequest;
 import GDG4th.personaChat.global.errorHandling.CustomException;
 import GDG4th.personaChat.global.errorHandling.errorCode.UserErrorCode;
+import GDG4th.personaChat.user.application.UserService;
 import GDG4th.personaChat.user.domain.User;
 import GDG4th.personaChat.user.persistent.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -17,9 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
+    private final EmailVerificationService verificationService;
+    private final UserService userService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailVerificationService verificationService;
     private final EmailSessionRepository emailSessionRepository;
 
     @Transactional
@@ -32,7 +34,9 @@ public class AuthService {
             throw CustomException.of(UserErrorCode.ALREADY_EXIST_USER);
         }
 
-        User user = request.toEntity(passwordEncoder);
+        String nickname = userService.generateUserNickname();
+
+        User user = request.toEntity(passwordEncoder, nickname);
 
         emailSessionRepository.deleteById(sessionId);
 
