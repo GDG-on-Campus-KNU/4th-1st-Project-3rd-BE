@@ -1,28 +1,22 @@
 package GDG4th.personaChat.chat.domain;
 
-import lombok.AccessLevel;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.Serializable;
 import java.util.List;
 
+@Document(collation = "chat_log")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RedisHash(value = "chat_log")
-public class Chat implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Chat {
     @Id
-    private String userId;
+    private String id;
 
     private String userMBTI;
 
     private List<Message> messages;
-
-    public Chat(Long userId, String userMBTI, List<Message> messages) {
-        this.userId = userId.toString();
-        this.userMBTI = userMBTI;
-        this.messages = messages;
-    }
 }
