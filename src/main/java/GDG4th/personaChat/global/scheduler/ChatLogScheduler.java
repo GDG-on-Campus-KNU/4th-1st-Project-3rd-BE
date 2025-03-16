@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ChatLogScheduler {
-    @Value("${scheduler.cron}") // 프로퍼티에서 크론 표현식 가져오기
-    private String cronExpression;
-
-    @Scheduled(cron = "${scheduler.cron}")
+    @Scheduled(cron = "0 0 6,12,18,0 * * ?")
     public void scheduledTask() {
     }
 }
