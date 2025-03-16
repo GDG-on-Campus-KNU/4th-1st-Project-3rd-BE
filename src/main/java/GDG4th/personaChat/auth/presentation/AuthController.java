@@ -41,8 +41,11 @@ public class AuthController {
     }
 
     @PostMapping("/email/code/verify")
-    public ResponseEntity<Void> emailVerify(@Valid @RequestBody EmailVerifyRequest request, HttpSession session){
+    public ResponseEntity<Void> emailVerify(@Valid @RequestBody EmailVerifyRequest request, HttpSession session, HttpServletResponse httpResponse){
         emailVerificationService.verifyCode(request.email(), request.code(), session);
+
+        CookieUtil.addSessionCookie(httpResponse, session.getId());
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

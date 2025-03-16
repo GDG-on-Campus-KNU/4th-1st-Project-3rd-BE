@@ -1,5 +1,10 @@
 server:
   port: ${SPRING_PORT}
+  servlet:
+    session:
+      cookie:
+        same-site: none
+        secure: false
 
 spring:
   datasource:
