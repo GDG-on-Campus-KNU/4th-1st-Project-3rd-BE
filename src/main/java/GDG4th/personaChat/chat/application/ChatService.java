@@ -74,7 +74,7 @@ public class ChatService {
         );
 
         // 마지막 메세지의 순서 + 1
-        int nextOrder = chatCache.getMessages().get(chatCache.getMessages().size()).getOrder();
+        int nextOrder = chatCache.getLastOrder()+1;
 
         // 캐시 용량을 벗어났을 때
         if (chatCache.getMessages().size() == MAX_CHAT_LENGTH) {
@@ -100,7 +100,7 @@ public class ChatService {
         );
 
         // 해당 유저의 첫 로그 저장이 아닌 경우
-        if(chatCache.getMessages().size() != MAX_CHAT_LENGTH) {
+        if(chatCache.getLastOrder() > MAX_CHAT_LENGTH) {
             chat.getMessages().addAll(chatCache.getMessages());
         }
 
