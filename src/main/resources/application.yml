@@ -42,3 +42,6 @@ spring:
 verification:
   max_failed_attempts: ${MAX_FAILED_ATTEMPTS}
   default_expiry: ${DEFAULT_EXPIRY}
+
+schedule:
+  cron: 0 0 6,12,18,0 * * ?
