@@ -7,10 +7,12 @@ import GDG4th.personaChat.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+@Slf4j
 @Component
 public class SessionInterceptor implements HandlerInterceptor {
 
@@ -33,7 +35,9 @@ public class SessionInterceptor implements HandlerInterceptor {
             throw CustomException.of(SessionErrorCode.SESSION_EXPIRED);
         }
 
-        System.out.println("[Session Interceptor] : Interceptor 실행, 세션 유효, 멤버 ID: " + session.getAttribute("userId"));
+        log.info("[Session Interceptor] : Interceptor 실행, 세션 유효, 멤버 ID: {}",
+            session.getAttribute("userId"));
+
         CookieUtil.addSessionCookie(response, session.getId());
         request.setAttribute("userId", session.getAttribute("userId"));
     }
