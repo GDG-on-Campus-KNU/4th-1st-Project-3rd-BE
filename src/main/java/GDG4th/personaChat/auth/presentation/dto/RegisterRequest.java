@@ -8,11 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public record RegisterRequest(
         @NotBlank String email,
-        @NotBlank String nickname,
         @NotBlank String password,
         MBTI mbti
 ){
-    public User toEntity(PasswordEncoder passwordEncoder){
+    public User toEntity(PasswordEncoder passwordEncoder, String nickname){
         return User.builder()
                 .email(email)
                 .nickname(nickname)
