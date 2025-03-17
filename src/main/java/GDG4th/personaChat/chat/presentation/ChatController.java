@@ -20,10 +20,10 @@ public class ChatController {
     // Todo 유저 정보 가져오는 부분 필요
     @GetMapping("/{mbti}")
     public ResponseEntity<List<MessageResponse>> getChatLog(
-            @RequestParam int lastOrder,
+            @RequestParam int startOrder,
             @PathVariable String mbti
     ) {
-        List<MessageInfo> messageInfos = chatService.responseMessage(1L, lastOrder);
+        List<MessageInfo> messageInfos = chatService.responseMessage(1L, startOrder);
         List<MessageResponse> messageResponses = messageInfos.stream().map(MessageResponse::of).toList();
         return new ResponseEntity<>(messageResponses, HttpStatus.OK);
     }

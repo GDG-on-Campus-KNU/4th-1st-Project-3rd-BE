@@ -38,4 +38,8 @@ public class ChatCache implements Serializable {
     public int getLastOrder() {
         return messages.isEmpty() ? -1 : messages.get(messages.size()-1).getOrder();
     }
+
+    public int getFirstOrder() {
+        return messages.isEmpty() ? -1 : messages.get(0).getOrder();
+    }
 }

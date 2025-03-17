@@ -6,8 +6,9 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ChatErrorCode implements ErrorCode{
     IS_LATEST(HttpStatus.NO_CONTENT, "C001", "Your message is latest"),
-    NO_CHAT_LOG(HttpStatus.NO_CONTENT, "C002", "It is your first chatting!"),
-    NOT_VALIDATE_PARAM(HttpStatus.BAD_REQUEST, "C003", "Your order value is wrong, order can't be negative value");
+    ZERO_CHAT_LOG(HttpStatus.NO_CONTENT, "C002", "It is your first chatting!"),
+    NOT_VALIDATE_PARAM(HttpStatus.BAD_REQUEST, "C003", "Your order value is wrong, order can't be negative value"),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "C004", "That user's chat log can't find at this system");
 
     private HttpStatus httpStatus;
     private String code;

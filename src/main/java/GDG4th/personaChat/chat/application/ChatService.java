@@ -20,29 +20,52 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ChatService {
-    private static final int MAX_CHAT_LENGTH = 100;
+    private static final int MAX_CHAT_LENGTH = 10;
     private final ChatCacheRepository chatCacheRepository;
     private final ChatRepository chatRepository;
     private final AiAgent aiAgent;
 
     @Transactional(readOnly = true)
-    public List<MessageInfo> responseMessage(Long userId, int lastOrder) {
-        ChatCache savedChatCache = chatCacheRepository.findById(userId).orElseThrow(
-                () -> CustomException.of(ChatErrorCode.NO_CHAT_LOG)
-        );
-        List<Message> messages = savedChatCache.getMessages();
-
+    public List<MessageInfo> responseMessage(Long userId, int startOrder) {
         // front 메세지가 잘못된 order 값을 사용하는 경우 ( 음수 )
-        if(messages.size() < lastOrder || lastOrder < 0) {
+        if(startOrder < 0) {
             throw CustomException.of(ChatErrorCode.NOT_VALIDATE_PARAM);
         }
 
-        // front 메세지가 가장 최근인 경우
-        if(messages.get(messages.size()-1).getOrder() == lastOrder) {
+        // 첫 채팅인지 구분
+        if(!chatCacheRepository.existsById(userId) && !chatRepository.existsById(userId.toString())) {
+            throw CustomException.of(ChatErrorCode.ZERO_CHAT_LOG);
+        }
+        ChatCache chatCache = chatCacheRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(ChatErrorCode.NOT_FOUND)
+        );
+        List<Message> answer = new ArrayList<>();
+
+        // front 메세지가 가장 최근이거나 더 큰 값을 요구하는 경우
+        if(chatCache.getLastOrder() < startOrder) {
             throw CustomException.of(ChatErrorCode.IS_LATEST);
         }
 
-        List<MessageInfo> responseMessage = messages.stream()
+        // 캐시가 아닌 mongoDB에 있는 채팅 로그의 경우
+        if(chatCache.getFirstOrder() > startOrder) {
+            Chat chat = chatRepository.findById(userId.toString()).orElseThrow(
+                    () -> CustomException.of(ChatErrorCode.NOT_FOUND)
+            );
+
+            List<Message> messages = chat.getMessages();
+            List<Message> targets = messages.stream()
+                    .filter(message -> message.getOrder() >= startOrder)
+                    .toList();
+            answer.addAll(targets);
+        }
+
+        List<Message> targetCache = chatCache.getMessages().stream()
+                .filter(message -> message.getOrder() >= startOrder)
+                .toList();
+
+        answer.addAll(targetCache);
+
+        List<MessageInfo> responseMessage = answer.stream()
                 .map(
                         message -> new MessageInfo(
                                 message.getContent(),
@@ -53,7 +76,7 @@ public class ChatService {
                 )
                 .toList();
 
-        return responseMessage.stream().skip(lastOrder).toList();
+        return responseMessage.stream().toList();
     }
 
     private String dateFormatting(LocalDateTime now) {
