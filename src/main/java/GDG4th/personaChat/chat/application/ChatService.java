@@ -4,9 +4,11 @@ import GDG4th.personaChat.aiAgent.AiAgent;
 import GDG4th.personaChat.chat.application.dto.MessageInfo;
 import GDG4th.personaChat.chat.domain.Chat;
 import GDG4th.personaChat.chat.domain.ChatCache;
+import GDG4th.personaChat.chat.domain.DataSet;
 import GDG4th.personaChat.chat.domain.Message;
 import GDG4th.personaChat.chat.persistent.ChatCacheRepository;
 import GDG4th.personaChat.chat.persistent.ChatRepository;
+import GDG4th.personaChat.chat.persistent.DataSetRepository;
 import GDG4th.personaChat.global.errorHandling.CustomException;
 import GDG4th.personaChat.global.errorHandling.errorCode.ChatErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +25,12 @@ public class ChatService {
     private static final int MAX_CHAT_LENGTH = 10;
     private final ChatCacheRepository chatCacheRepository;
     private final ChatRepository chatRepository;
+    private final DataSetRepository dataSetRepository;
     private final AiAgent aiAgent;
 
     @Transactional(readOnly = true)
     public List<MessageInfo> responseMessage(Long userId, int startOrder) {
-        // front 메세지가 잘못된 order 값을 사용하는 경우 ( 음수 )
-        if(startOrder < 0) {
-            throw CustomException.of(ChatErrorCode.NOT_VALIDATE_PARAM);
-        }
-
-        // 첫 채팅인지 구분
+        // 첫 채팅인지 확인
         if(!chatCacheRepository.existsById(userId) && !chatRepository.existsById(userId.toString())) {
             throw CustomException.of(ChatErrorCode.ZERO_CHAT_LOG);
         }
@@ -41,7 +39,7 @@ public class ChatService {
         );
         List<Message> answer = new ArrayList<>();
 
-        // front 메세지가 가장 최근이거나 더 큰 값을 요구하는 경우
+        // 가장 최근이거나 더 큰 값을 요구하는 경우
         if(chatCache.getLastOrder() < startOrder) {
             throw CustomException.of(ChatErrorCode.IS_LATEST);
         }
@@ -85,7 +83,6 @@ public class ChatService {
         return now.format(formatter);
     }
 
-    @Transactional
     public void receiveUserMessage(Long userId, String mbti, String content) {
         // 채팅 캐시 조회
         ChatCache chatCache = chatCacheRepository.findById(userId).orElseGet(
@@ -101,7 +98,8 @@ public class ChatService {
 
         // 캐시 용량을 벗어났을 때
         if (chatCache.getMessages().size() == MAX_CHAT_LENGTH) {
-            saveToMongo(chatCache);
+            saveChatLogToMongo(chatCache);
+            saveDataSetToMongo(chatCache);
             chatCache.clearCache();
         }
 
@@ -113,7 +111,7 @@ public class ChatService {
         chatCacheRepository.save(chatCache);
     }
 
-    private void saveToMongo(ChatCache chatCache) {
+    private void saveChatLogToMongo(ChatCache chatCache) {
         Chat chat = chatRepository.findById(chatCache.getUserId()).orElseGet(
                 () -> new Chat(
                         chatCache.getUserId(),
@@ -128,5 +126,15 @@ public class ChatService {
         }
 
         chatRepository.save(chat);
+    }
+
+    private void saveDataSetToMongo(ChatCache chatCache) {
+        List<Message> messages = chatCache.getMessages();
+        for(int i = 0; i < messages.size(); i += 2) {
+            String input = messages.get(i).getContent();
+            String response = messages.get(i+1).getContent();
+            DataSet dataSet = new DataSet(chatCache.getUserMBTI(), input, response);
+            dataSetRepository.save(dataSet);
+        }
     }
 }
