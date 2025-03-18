@@ -47,3 +47,5 @@ spring:
 verification:
   max_failed_attempts: ${MAX_FAILED_ATTEMPTS}
   default_expiry: ${DEFAULT_EXPIRY}
+cors:
+  allowed-domains: ${CORS_ALLOWED_DOMAINS}
