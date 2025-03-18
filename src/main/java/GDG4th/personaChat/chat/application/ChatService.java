@@ -4,11 +4,9 @@ import GDG4th.personaChat.aiAgent.AiAgent;
 import GDG4th.personaChat.chat.application.dto.MessageInfo;
 import GDG4th.personaChat.chat.domain.Chat;
 import GDG4th.personaChat.chat.domain.ChatCache;
-import GDG4th.personaChat.chat.domain.DataSet;
 import GDG4th.personaChat.chat.domain.Message;
 import GDG4th.personaChat.chat.persistent.ChatCacheRepository;
 import GDG4th.personaChat.chat.persistent.ChatRepository;
-import GDG4th.personaChat.chat.persistent.DataSetRepository;
 import GDG4th.personaChat.global.errorHandling.CustomException;
 import GDG4th.personaChat.global.errorHandling.errorCode.ChatErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,6 @@ public class ChatService {
     private static final int MAX_CHAT_LENGTH = 10;
     private final ChatCacheRepository chatCacheRepository;
     private final ChatRepository chatRepository;
-    private final DataSetRepository dataSetRepository;
     private final AiAgent aiAgent;
 
     @Transactional(readOnly = true)
@@ -99,7 +96,6 @@ public class ChatService {
         // 캐시 용량을 벗어났을 때
         if (chatCache.getMessages().size() == MAX_CHAT_LENGTH) {
             saveChatLogToMongo(chatCache);
-            saveDataSetToMongo(chatCache);
             chatCache.clearCache();
         }
 
@@ -126,15 +122,5 @@ public class ChatService {
         }
 
         chatRepository.save(chat);
-    }
-
-    private void saveDataSetToMongo(ChatCache chatCache) {
-        List<Message> messages = chatCache.getMessages();
-        for(int i = 0; i < messages.size(); i += 2) {
-            String input = messages.get(i).getContent();
-            String response = messages.get(i+1).getContent();
-            DataSet dataSet = new DataSet(chatCache.getUserMBTI(), input, response);
-            dataSetRepository.save(dataSet);
-        }
     }
 }
