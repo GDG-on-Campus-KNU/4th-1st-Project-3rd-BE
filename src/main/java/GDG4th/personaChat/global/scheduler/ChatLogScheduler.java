@@ -5,7 +5,9 @@ import GDG4th.personaChat.chat.domain.ChatCache;
 import GDG4th.personaChat.chat.domain.Message;
 import GDG4th.personaChat.chat.persistent.ChatCacheRepository;
 import GDG4th.personaChat.chat.persistent.ChatRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,8 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ChatLogScheduler {
-    private static final int MAX_CHAT_LENGTH = 100;
+    @Value("${verification.max_chat_length}")
+    private static int MAX_CHAT_LENGTH;
     private final ChatCacheRepository chatCacheRepository;
     private final ChatRepository chatRepository;
 
