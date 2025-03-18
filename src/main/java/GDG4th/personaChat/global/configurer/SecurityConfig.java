@@ -18,8 +18,6 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-    @Value("${cors.allowed-domains}")
-    private String allowedDomains;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
