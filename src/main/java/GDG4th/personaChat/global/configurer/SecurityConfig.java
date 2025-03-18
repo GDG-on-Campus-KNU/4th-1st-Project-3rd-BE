@@ -42,8 +42,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // 허용할 Origin 패턴 설정
-        config.setAllowedOriginPatterns(List.of(allowedDomains.split(",\\s*")));
+        config.setAllowedOriginPatterns(List.of("*"));
         // 허용할 HTTP 메서드 설정
         config.setAllowedMethods(List.of(HttpMethod.GET.name(), HttpMethod.POST.name(),
                 HttpMethod.PATCH.name(), HttpMethod.DELETE.name(),
