@@ -39,7 +39,7 @@ public class ChatService {
         List<Message> answer = new ArrayList<>();
 
         if(chatCache.getLastOrder() < startOrder) {
-            throw CustomException.of(ChatErrorCode.IS_LATEST);
+            return new ArrayList<MessageInfo>();
         }
 
         if(chatCache.getFirstOrder() > startOrder) {
