@@ -26,7 +26,7 @@ public class CookieUtil {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/"); // 모든 경로에서 사용 가능
         cookie.setHttpOnly(true); // JavaScript 접근 방지 (XSS 공격 방지)
-        cookie.setSecure(true); // HTTPS에서만 쿠키 전송
+        cookie.setSecure(false); // HTTPS에서만 쿠키 전송
         cookie.setMaxAge(maxAge); // 만료 시간 설정
         response.addCookie(cookie);
     }

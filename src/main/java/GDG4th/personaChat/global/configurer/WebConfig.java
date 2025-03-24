@@ -19,13 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
     private final SessionUserIdArgumentResolver sessionUserIdArgumentResolver;
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOriginPatterns("*")
-                .allowedMethods("GET", "POST", "PATCH", "DELETE", "OPTIONS");
-    }
-
-    @Override
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(sessionInterceptor);
     }
