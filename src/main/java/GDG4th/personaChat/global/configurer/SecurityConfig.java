@@ -1,5 +1,6 @@
 package GDG4th.personaChat.global.configurer;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -39,9 +40,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // 허용할 Origin 패턴 설정
-        config.setAllowedOriginPatterns(List.of("http://localhost:5178"));
-
+        config.setAllowedOriginPatterns(List.of("*"));
         // 허용할 HTTP 메서드 설정
         config.setAllowedMethods(List.of(HttpMethod.GET.name(), HttpMethod.POST.name(),
                 HttpMethod.PATCH.name(), HttpMethod.DELETE.name(),

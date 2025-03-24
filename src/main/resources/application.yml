@@ -48,3 +48,6 @@ verification:
   max_failed_attempts: ${MAX_FAILED_ATTEMPTS}
   default_expiry: ${DEFAULT_EXPIRY}
   max_chat_length : ${MAX_CHAT_LENGTH}
+cors:
+  allowed-domains: ${CORS_ALLOWED_DOMAINS}
+
