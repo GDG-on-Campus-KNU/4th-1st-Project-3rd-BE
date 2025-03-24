@@ -2,23 +2,16 @@ package GDG4th.personaChat.global.scheduler;
 
 import GDG4th.personaChat.chat.domain.Chat;
 import GDG4th.personaChat.chat.domain.ChatCache;
-import GDG4th.personaChat.chat.domain.Message;
 import GDG4th.personaChat.chat.persistent.ChatCacheRepository;
 import GDG4th.personaChat.chat.persistent.ChatRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class ChatLogScheduler {
-    @Value("${verification.max_chat_length}")
-    private static int MAX_CHAT_LENGTH;
+    private static final int MAX_CHAT_LENGTH = 100;
     private final ChatCacheRepository chatCacheRepository;
     private final ChatRepository chatRepository;
 
@@ -39,23 +32,6 @@ public class ChatLogScheduler {
             chatRepository.save(chat);
 
             cache.clearCache();
-            schedulerLogging(cache, lastOrder);
         }
-    }
-
-    private void schedulerLogging( ChatCache cache, int lastOrder) {
-        Message message1 = new Message(
-                "scheduler running!", true, lastOrder + 1, LocalDateTime.now()
-        );
-        Message message2 = new Message(
-                "scheduler running!", false, lastOrder + 2, LocalDateTime.now()
-        );
-        ChatCache chatCache = new ChatCache(
-                Long.parseLong(cache.getUserId()),
-                cache.getUserMBTI(),
-                List.of(message1, message2)
-        );
-
-        chatCacheRepository.save(chatCache);
     }
 }
