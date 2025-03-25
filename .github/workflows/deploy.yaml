@@ -1,0 +1,25 @@
+name : Deploy Action on Main Branch Merge
+
+on:
+  push:
+    branches:
+      - main
+
+job:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: action/checkout@v3
+
+      - name : Deploy To Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/my-app/4th-1st-Project-3rd-BE
+            
+            git pull origin main
+            
+            sudo docker-compose --env-file .env.dev up -d --build
