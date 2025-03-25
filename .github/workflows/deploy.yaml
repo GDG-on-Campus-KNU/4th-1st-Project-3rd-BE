@@ -31,7 +31,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/my-app/4th-1st-Project-3rd-BE
+            cd /home/ubuntu/4th-1st-Project-3rd-BE
             
             git pull origin main
             
