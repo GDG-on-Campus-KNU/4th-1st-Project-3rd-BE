@@ -4,6 +4,9 @@ import GDG4th.personaChat.chat.application.ChatService;
 import GDG4th.personaChat.chat.application.dto.MessageInfo;
 import GDG4th.personaChat.chat.presentation.dto.MessageRequest;
 import GDG4th.personaChat.chat.presentation.dto.MessageResponse;
+import GDG4th.personaChat.global.annotation.SessionUserId;
+import GDG4th.personaChat.global.util.ApiResponse;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,24 +20,24 @@ import java.util.List;
 public class ChatController {
     private final ChatService chatService;
 
-    // Todo 유저 정보 가져오는 부분 필요
     @GetMapping("/{mbti}")
-    public ResponseEntity<List<MessageResponse>> getChatLog(
-            @RequestParam int lastOrder,
+    public ResponseEntity<ApiResponse<List<MessageResponse>>> getChatLog(
+            @RequestParam @Min(0) int startOrder,
+            @SessionUserId Long userId,
             @PathVariable String mbti
     ) {
-        List<MessageInfo> messageInfos = chatService.responseMessage(1L, lastOrder);
+        List<MessageInfo> messageInfos = chatService.responseMessage(userId, startOrder);
         List<MessageResponse> messageResponses = messageInfos.stream().map(MessageResponse::of).toList();
-        return new ResponseEntity<>(messageResponses, HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponse.of(messageResponses), HttpStatus.OK);
     }
 
-    // Todo 유저 정보 가져오는 부분 필요
     @PostMapping("/{mbti}")
     public ResponseEntity<Void> postChat(
             @RequestBody MessageRequest messageRequest,
+            @SessionUserId Long userId,
             @PathVariable String mbti
     ) {
-        chatService.receiveUserMessage(1L, "mbti", messageRequest.content());
+        chatService.receiveUserMessage(userId, "mbti", messageRequest.content());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

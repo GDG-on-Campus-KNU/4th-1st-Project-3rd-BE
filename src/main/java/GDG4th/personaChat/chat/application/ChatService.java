@@ -1,12 +1,16 @@
 package GDG4th.personaChat.chat.application;
 
+import GDG4th.personaChat.aiAgent.AiAgent;
 import GDG4th.personaChat.chat.application.dto.MessageInfo;
 import GDG4th.personaChat.chat.domain.Chat;
+import GDG4th.personaChat.chat.domain.ChatCache;
 import GDG4th.personaChat.chat.domain.Message;
+import GDG4th.personaChat.chat.persistent.ChatCacheRepository;
 import GDG4th.personaChat.chat.persistent.ChatRepository;
 import GDG4th.personaChat.global.errorHandling.CustomException;
 import GDG4th.personaChat.global.errorHandling.errorCode.ChatErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,27 +21,46 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ChatService {
-    private static final int MAX_CHAT_LENGTH = 50;
+    @Value("${verification.max_chat_length}")
+    private static int MAX_CHAT_LENGTH;
+    private final ChatCacheRepository chatCacheRepository;
     private final ChatRepository chatRepository;
+    private final AiAgent aiAgent;
 
     @Transactional(readOnly = true)
-    public List<MessageInfo> responseMessage(Long userId, int lastOrder) {
-        Chat savedChat = chatRepository.findById(userId).orElseThrow(
-                () -> CustomException.of(ChatErrorCode.NO_CHAT_LOG)
+    public List<MessageInfo> responseMessage(Long userId, int startOrder) {
+        if(isFirstChat(userId)) {
+            throw CustomException.of(ChatErrorCode.ZERO_CHAT_LOG);
+        }
+
+        ChatCache chatCache = chatCacheRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(ChatErrorCode.NOT_FOUND)
         );
-        List<Message> messages = savedChat.getMessages();
+        List<Message> answer = new ArrayList<>();
 
-        // front 메세지가 가장 최근인 경우
-        if(messages.size() == lastOrder) {
-            throw CustomException.of(ChatErrorCode.IS_LATEST);
+        if(chatCache.getLastOrder() < startOrder) {
+            return new ArrayList<MessageInfo>();
         }
 
-        // front 메세지가 잘못된 order 값을 사용하는 경우
-        if(messages.size() < lastOrder || lastOrder < 0) {
-            throw CustomException.of(ChatErrorCode.NOT_VALIDATE_PARAM);
+        if(chatCache.getFirstOrder() > startOrder) {
+            Chat chat = chatRepository.findById(userId.toString()).orElseThrow(
+                    () -> CustomException.of(ChatErrorCode.NOT_FOUND)
+            );
+
+            List<Message> messages = chat.getMessages();
+            List<Message> targets = messages.stream()
+                    .filter(message -> message.getOrder() >= startOrder)
+                    .toList();
+            answer.addAll(targets);
         }
 
-        List<MessageInfo> responseMessage = messages.stream().map(
+        List<Message> targetCache = chatCache.getMessages().stream()
+                .filter(message -> message.getOrder() >= startOrder)
+                .toList();
+        answer.addAll(targetCache);
+
+        List<MessageInfo> responseMessage = answer.stream()
+                .map(
                         message -> new MessageInfo(
                                 message.getContent(),
                                 message.getOrder(),
@@ -47,8 +70,11 @@ public class ChatService {
                 )
                 .toList();
 
-        return responseMessage.stream().skip(lastOrder).toList();
+        return responseMessage.stream().toList();
+    }
 
+    private boolean isFirstChat(Long userId) {
+        return !chatCacheRepository.existsById(userId) && !chatRepository.existsById(userId.toString());
     }
 
     private String dateFormatting(LocalDateTime now) {
@@ -57,22 +83,45 @@ public class ChatService {
         return now.format(formatter);
     }
 
-    @Transactional
     public void receiveUserMessage(Long userId, String mbti, String content) {
-        // 특정 유저의 채팅을 조회
-        Optional<Chat> savedChat = chatRepository.findById(userId);
-
-        // 유저 채팅의 메세지 내용을 조회 ( 없으면 새로운 리스트 생성 )
-        List<Message> messages = savedChat.map(Chat::getMessages).orElseGet(ArrayList::new);
-        messages.add(
-                new Message(content, true, messages.size(), LocalDateTime.now())
+        ChatCache chatCache = chatCacheRepository.findById(userId).orElseGet(
+                () -> new ChatCache(
+                        userId,
+                        mbti,
+                        new ArrayList<>()
+                )
         );
 
-        // Todo Trigger 로직 넣기 -> MongoDB로 전송
-        if (messages.size() > MAX_CHAT_LENGTH) {
-            System.out.println("Mongo DB Inset trigger");
+        int nextOrder = chatCache.getLastOrder()+1;
+
+        if (chatCache.getMessages().size() == MAX_CHAT_LENGTH) {
+            saveChatLogToMongo(chatCache);
+            chatCache.clearCache();
         }
 
-        chatRepository.save(messages.size() == 1 ? new Chat(userId, mbti, messages) : savedChat.get());
+
+        Message message = new Message(content, true, nextOrder, LocalDateTime.now());
+        Message aiMessage = aiAgent.messageToAiClient(message.getOrder(), content);
+        chatCache.addCache(message);
+        chatCache.addCache(aiMessage);
+
+        chatCacheRepository.save(chatCache);
+    }
+
+    private void saveChatLogToMongo(ChatCache chatCache) {
+        Chat chat = chatRepository.findById(chatCache.getUserId()).orElseGet(
+                () -> new Chat(
+                        chatCache.getUserId(),
+                        chatCache.getUserMBTI(),
+                        chatCache.getMessages()
+                )
+        );
+
+        // 해당 유저의 첫 로그 저장이 아닌 경우
+        if(chatCache.getLastOrder() > MAX_CHAT_LENGTH) {
+            chat.getMessages().addAll(chatCache.getMessages());
+        }
+
+        chatRepository.save(chat);
     }
 }
