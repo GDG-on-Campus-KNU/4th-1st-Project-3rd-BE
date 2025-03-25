@@ -24,6 +24,8 @@ jobs:
             
             git pull origin main
             
+            ./gradlew clean build -x test
+            
             sudo docker stop persona-chat-server
             
             sudo docker rm persona-chat-server
