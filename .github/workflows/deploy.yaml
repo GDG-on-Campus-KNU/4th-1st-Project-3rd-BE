@@ -12,17 +12,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name : Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Build with Gradle
-        run: |
-          chmod +x ./gradlew
-          ./gradlew clean build -x test
-
       - name : Deploy To Server
         uses: appleboy/ssh-action@master
         id: deploy
@@ -34,5 +23,7 @@ jobs:
             cd /home/ubuntu/4th-1st-Project-3rd-BE
             
             git pull origin main
+            
+            sudo docker rm persona-chat-server
             
             sudo docker-compose --env-file .env.dev up -d --build
