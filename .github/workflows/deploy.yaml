@@ -26,7 +26,7 @@ jobs:
             
             chmod +x ./gradlew
             
-            ./gradlew clean build -x test
+            sudo ./gradlew clean build -x test
             
             sudo docker stop persona-chat-server
             
