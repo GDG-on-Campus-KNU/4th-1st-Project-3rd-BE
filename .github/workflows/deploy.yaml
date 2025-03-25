@@ -24,6 +24,8 @@ jobs:
             
             git pull origin main
             
+            sudo docker stop persona-chat-server
+            
             sudo docker rm persona-chat-server
             
             sudo docker-compose --env-file .env.dev up -d --build
