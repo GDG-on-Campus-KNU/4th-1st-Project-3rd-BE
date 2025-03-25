@@ -12,10 +12,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name : Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+
       - name : Deploy To Server
         uses: appleboy/ssh-action@master
+        id: deploy
         with:
           host: ${{ secrets.SERVER_HOST }}
+          username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/my-app/4th-1st-Project-3rd-BE
