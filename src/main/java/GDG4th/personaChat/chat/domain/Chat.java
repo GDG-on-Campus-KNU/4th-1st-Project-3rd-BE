@@ -19,4 +19,8 @@ public class Chat {
     private String userMBTI;
 
     private List<Message> messages;
+
+    public int getLastOrder() {
+        return messages.isEmpty() ? -1 : messages.get(messages.size()-1).getOrder();
+    }
 }

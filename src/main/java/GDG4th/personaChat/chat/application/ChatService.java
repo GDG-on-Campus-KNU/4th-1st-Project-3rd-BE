@@ -10,77 +10,58 @@ import GDG4th.personaChat.chat.persistent.ChatRepository;
 import GDG4th.personaChat.global.errorHandling.CustomException;
 import GDG4th.personaChat.global.errorHandling.errorCode.ChatErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class ChatService {
-    @Value("${verification.max_chat_length}")
-    private static int MAX_CHAT_LENGTH;
+    private static final int MAX_CHAT_LENGTH = 100;
     private final ChatCacheRepository chatCacheRepository;
     private final ChatRepository chatRepository;
     private final AiAgent aiAgent;
 
     @Transactional(readOnly = true)
     public List<MessageInfo> responseMessage(Long userId, int startOrder) {
-        if(isFirstChat(userId)) {
-            throw CustomException.of(ChatErrorCode.ZERO_CHAT_LOG);
+        List<Message> target = findTargetRange(userId);
+        int size = target.size();
+
+        // case : No chat log in this system
+        if(size == 0) {
+            return new ArrayList<>();
         }
 
-        ChatCache chatCache = chatCacheRepository.findById(userId).orElseThrow(
-                () -> CustomException.of(ChatErrorCode.NOT_FOUND)
-        );
-        List<Message> answer = new ArrayList<>();
-
-        if(chatCache.getLastOrder() < startOrder) {
-            return new ArrayList<MessageInfo>();
+        // case : startOrder too big
+        if(size <= startOrder) {
+            return new ArrayList<>();
         }
 
-        if(chatCache.getFirstOrder() > startOrder) {
-            Chat chat = chatRepository.findById(userId.toString()).orElseThrow(
-                    () -> CustomException.of(ChatErrorCode.NOT_FOUND)
-            );
-
-            List<Message> messages = chat.getMessages();
-            List<Message> targets = messages.stream()
-                    .filter(message -> message.getOrder() >= startOrder)
-                    .toList();
-            answer.addAll(targets);
-        }
-
-        List<Message> targetCache = chatCache.getMessages().stream()
-                .filter(message -> message.getOrder() >= startOrder)
-                .toList();
-        answer.addAll(targetCache);
-
-        List<MessageInfo> responseMessage = answer.stream()
-                .map(
-                        message -> new MessageInfo(
-                                message.getContent(),
-                                message.getOrder(),
-                                message.isUserChat(),
-                                dateFormatting(message.getTimeStamp())
-                        )
-                )
-                .toList();
-
-        return responseMessage.stream().toList();
+        // case : normal case
+        List<Message> messages = target.subList(startOrder, size);
+        return messages.stream().map(MessageInfo::of).toList();
     }
 
-    private boolean isFirstChat(Long userId) {
-        return !chatCacheRepository.existsById(userId) && !chatRepository.existsById(userId.toString());
-    }
+    private List<Message> findTargetRange(Long userId) {
+        List<Message> target = new ArrayList<>();
+        if(!chatRepository.existsById(userId.toString()) && chatCacheRepository.existsById(userId)) {
+            ChatCache chatCache = chatCacheRepository.findById(userId).get();
+            target.addAll(chatCache.getMessages());
+        }
+        else if(chatRepository.existsById(userId.toString()) && !chatCacheRepository.existsById(userId)) {
+            Chat chat = chatRepository.findById(userId.toString()).get();
+            target.addAll(chat.getMessages());
+        }
+        else if(chatRepository.existsById(userId.toString()) && chatCacheRepository.existsById(userId)) {
+            Chat chat = chatRepository.findById(userId.toString()).get();
+            ChatCache chatCache = chatCacheRepository.findById(userId).get();
 
-    private String dateFormatting(LocalDateTime now) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-        return now.format(formatter);
+            target.addAll(chat.getMessages());
+            target.addAll(chatCache.getMessages());
+        }
+        return target;
     }
 
     public void receiveUserMessage(Long userId, String mbti, String content) {
@@ -94,14 +75,25 @@ public class ChatService {
 
         int nextOrder = chatCache.getLastOrder()+1;
 
+        // case : chat log only exist in persist mongo db
+        if(nextOrder == 0 && chatRepository.existsById(userId.toString())) {
+            nextOrder = chatRepository.findById(userId.toString()).get().getLastOrder() + 1;
+        }
+
+        // case : chat log size reach MAX_LENGTH
         if (chatCache.getMessages().size() == MAX_CHAT_LENGTH) {
             saveChatLogToMongo(chatCache);
             chatCache.clearCache();
         }
 
+        // case : It's Logical Error Case
+        if (chatCache.getMessages().size() > MAX_CHAT_LENGTH) {
+            throw CustomException.of(ChatErrorCode.LOGICAL_ERROR);
+        }
+
 
         Message message = new Message(content, true, nextOrder, LocalDateTime.now());
-        Message aiMessage = aiAgent.messageToAiClient(message.getOrder(), content);
+        Message aiMessage = aiAgent.messageToAiClient(nextOrder, content);
         chatCache.addCache(message);
         chatCache.addCache(aiMessage);
 
