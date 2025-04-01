@@ -1,9 +1,8 @@
 package GDG4th.personaChat.global.configurer;
 
-import org.springframework.beans.factory.annotation.Value;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,8 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -40,11 +37,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedOriginPatterns(List.of("http://localhost:5173","https://dev.personachat.my", "https://d3qjn212wli973.cloudfront.net"));
         // 허용할 HTTP 메서드 설정
-        config.setAllowedMethods(List.of(HttpMethod.GET.name(), HttpMethod.POST.name(),
-                HttpMethod.PATCH.name(), HttpMethod.DELETE.name(),
-                HttpMethod.OPTIONS.name()));
+        config.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
 
         // 허용할 요청 헤더 설정
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
