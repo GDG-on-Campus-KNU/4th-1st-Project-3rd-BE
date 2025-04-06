@@ -1,4 +1,4 @@
-name : Deploy Action on Main Branch Merge
+name : Deploy Action on Develop Branch Merge
 
 on:
   push:
