@@ -4,6 +4,7 @@ import GDG4th.personaChat.chat.application.ChatService;
 import GDG4th.personaChat.chat.application.dto.MessageInfo;
 import GDG4th.personaChat.chat.presentation.dto.MessageRequest;
 import GDG4th.personaChat.chat.presentation.dto.MessageResponse;
+import GDG4th.personaChat.global.annotation.SessionCheck;
 import GDG4th.personaChat.global.annotation.SessionUserId;
 import GDG4th.personaChat.global.util.ApiResponse;
 import jakarta.validation.constraints.Min;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ChatController {
     private final ChatService chatService;
 
+    @SessionCheck
     @GetMapping("/{mbti}")
     public ResponseEntity<ApiResponse<List<MessageResponse>>> getChatLog(
             @RequestParam @Min(0) int startOrder,
@@ -31,6 +33,7 @@ public class ChatController {
         return new ResponseEntity<>(ApiResponse.of(messageResponses), HttpStatus.OK);
     }
 
+    @SessionCheck
     @PostMapping("/{mbti}")
     public ResponseEntity<Void> postChat(
             @RequestBody MessageRequest messageRequest,
