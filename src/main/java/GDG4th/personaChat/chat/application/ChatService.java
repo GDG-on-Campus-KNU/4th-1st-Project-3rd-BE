@@ -25,8 +25,9 @@ public class ChatService {
     private final AiAgent aiAgent;
 
     @Transactional(readOnly = true)
-    public List<MessageInfo> responseMessage(Long userId, int startOrder) {
-        List<Message> target = findTargetRange(userId);
+    public List<MessageInfo> responseMessage(Long userId, String opponentMBTI, int startOrder) {
+        String id = userId + ":" + opponentMBTI;
+        List<Message> target = findTargetRange(id);
         int size = target.size();
 
         // case : No chat log in this system
@@ -44,18 +45,18 @@ public class ChatService {
         return messages.stream().map(MessageInfo::of).toList();
     }
 
-    private List<Message> findTargetRange(Long userId) {
+    private List<Message> findTargetRange(String userId) {
         List<Message> target = new ArrayList<>();
-        if(!chatRepository.existsById(userId.toString()) && chatCacheRepository.existsById(userId)) {
+        if(!chatRepository.existsById(userId) && chatCacheRepository.existsById(userId)) {
             ChatCache chatCache = chatCacheRepository.findById(userId).get();
             target.addAll(chatCache.getMessages());
         }
-        else if(chatRepository.existsById(userId.toString()) && !chatCacheRepository.existsById(userId)) {
-            Chat chat = chatRepository.findById(userId.toString()).get();
+        else if(chatRepository.existsById(userId) && !chatCacheRepository.existsById(userId)) {
+            Chat chat = chatRepository.findById(userId).get();
             target.addAll(chat.getMessages());
         }
-        else if(chatRepository.existsById(userId.toString()) && chatCacheRepository.existsById(userId)) {
-            Chat chat = chatRepository.findById(userId.toString()).get();
+        else if(chatRepository.existsById(userId) && chatCacheRepository.existsById(userId)) {
+            Chat chat = chatRepository.findById(userId).get();
             ChatCache chatCache = chatCacheRepository.findById(userId).get();
 
             target.addAll(chat.getMessages());
@@ -64,20 +65,16 @@ public class ChatService {
         return target;
     }
 
-    public void receiveUserMessage(Long userId, String mbti, String content) {
-        ChatCache chatCache = chatCacheRepository.findById(userId).orElseGet(
-                () -> new ChatCache(
-                        userId,
-                        mbti,
-                        new ArrayList<>()
-                )
+    public void saveChatLogToRedis(Long userId, String userMbti, String opponentMbti, String content) {
+        ChatCache chatCache = chatCacheRepository.findById(userId + ":" + opponentMbti).orElseGet(
+                () -> new ChatCache(userId, userMbti, opponentMbti, new ArrayList<>())
         );
-
         int nextOrder = chatCache.getLastOrder()+1;
 
+        String id = chatCache.getId();
         // case : chat log only exist in persist mongo db
-        if(nextOrder == 0 && chatRepository.existsById(userId.toString())) {
-            nextOrder = chatRepository.findById(userId.toString()).get().getLastOrder() + 1;
+        if(nextOrder == 0 && chatRepository.existsById(id)) {
+            nextOrder = chatRepository.findById(id).get().getLastOrder() + 1;
         }
 
         // case : chat log size reach MAX_LENGTH
@@ -91,7 +88,6 @@ public class ChatService {
             throw CustomException.of(ChatErrorCode.LOGICAL_ERROR);
         }
 
-
         Message message = new Message(content, true, nextOrder, LocalDateTime.now());
         Message aiMessage = aiAgent.messageToAiClient(nextOrder, content);
         chatCache.addCache(message);
@@ -101,9 +97,9 @@ public class ChatService {
     }
 
     private void saveChatLogToMongo(ChatCache chatCache) {
-        Chat chat = chatRepository.findById(chatCache.getUserId()).orElseGet(
+        Chat chat = chatRepository.findById(chatCache.getId()).orElseGet(
                 () -> new Chat(
-                        chatCache.getUserId(),
+                        chatCache.getId(),
                         chatCache.getUserMBTI(),
                         chatCache.getMessages()
                 )
@@ -115,5 +111,26 @@ public class ChatService {
         }
 
         chatRepository.save(chat);
+    }
+
+    public String getLastChat(String id) {
+       if(chatCacheRepository.existsById(id)) {
+           ChatCache chatCache = chatCacheRepository.findById(id).get();
+           Message message = chatCache.getMessages().get(chatCache.getMessages().size() - 1);
+           return message.getContent();
+       }
+
+       if(chatRepository.existsById(id)) {
+           Chat chat = chatRepository.findById(id).get();
+           Message message = chat.getMessages().get(chat.getMessages().size());
+           return message.getContent();
+       }
+
+       return null;
+    }
+
+    public void resetChatLog(String id) {
+        chatCacheRepository.deleteById(id);
+        chatRepository.deleteById(id);
     }
 }
