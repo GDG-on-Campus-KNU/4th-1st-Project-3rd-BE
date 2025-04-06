@@ -1,5 +1,7 @@
 package GDG4th.personaChat.user.domain;
 
+import GDG4th.personaChat.global.errorHandling.CustomException;
+import GDG4th.personaChat.global.errorHandling.errorCode.UserErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -72,7 +74,7 @@ public class User {
         return false;
     }
 
-    private boolean isOpened(String mbti) {
+    public boolean isOpened(String mbti) {
         return (this.openedMbti & (1 << MBTI.valueOf(mbti).getNumber())) != 0;
     }
 

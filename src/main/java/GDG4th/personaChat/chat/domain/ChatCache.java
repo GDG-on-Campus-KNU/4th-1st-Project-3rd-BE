@@ -14,14 +14,14 @@ import java.util.List;
 @RedisHash(value = "chat_log")
 public class ChatCache implements Serializable {
     @Id
-    private String userId;
+    private String id;
 
     private String userMBTI;
 
     private List<Message> messages;
 
-    public ChatCache(Long userId, String userMBTI, List<Message> messages) {
-        this.userId = userId.toString();
+    public ChatCache(Long userId, String userMBTI, String opponentMBTI, List<Message> messages) {
+        this.id = userId.toString() + ":" + opponentMBTI;
         this.userMBTI = userMBTI;
         this.messages = messages;
     }
