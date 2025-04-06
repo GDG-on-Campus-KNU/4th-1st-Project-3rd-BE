@@ -34,6 +34,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Column(name="openedMbti", nullable = false)
+    private int openedMbti;
+
     @Builder
     public User(
         final String email,
@@ -47,6 +50,26 @@ public class User {
         this.password = password;
         this.mbti = mbti;
         this.role = role;
+        this.openedMbti = 0;
     }
 
+    public boolean openMbti(String mbti) {
+        if(isOpened(mbti)) {
+            this.openedMbti = openedMbti | (1 << MBTI.valueOf(mbti).getNumber());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean closeMbti(String mbti) {
+        if(isOpened(mbti)) {
+            this.openedMbti = openedMbti & ~(1 << MBTI.valueOf(mbti).getNumber());
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isOpened(String mbti) {
+        return (this.openedMbti & (1 << MBTI.valueOf(mbti).getNumber())) != 0;
+    }
 }
