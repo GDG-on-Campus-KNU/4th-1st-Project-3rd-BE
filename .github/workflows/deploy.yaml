@@ -3,15 +3,12 @@ name : Deploy Action on Main Branch Merge
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
       - name : Deploy To Server
         uses: appleboy/ssh-action@master
         id: deploy
@@ -22,7 +19,9 @@ jobs:
           script: |
             cd /home/ubuntu/4th-1st-Project-3rd-BE
             
-            git pull origin main
+            git fetch origin
+            
+            git reset --hard origin/develop
             
             chmod +x ./gradlew
             
