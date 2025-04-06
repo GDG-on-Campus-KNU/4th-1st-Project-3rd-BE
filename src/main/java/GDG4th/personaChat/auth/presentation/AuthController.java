@@ -34,11 +34,12 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> register(
         @Valid @RequestBody RegisterRequest request,
         HttpSession session,
+        HttpServletRequest httpRequest,
         HttpServletResponse httpResponse
     ) {
         RegisterResponse response = RegisterResponse.from(authService.register(request, session));
-
         CookieUtil.deleteCookie(httpResponse, "JSESSIONID");
+        authService.saveSessionAndSetCookie(session, httpRequest, httpResponse, response.userId());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
