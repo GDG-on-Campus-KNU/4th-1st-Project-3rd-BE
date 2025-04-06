@@ -4,6 +4,7 @@ import GDG4th.personaChat.chat.application.ChatFacade;
 import GDG4th.personaChat.chat.application.ChatService;
 import GDG4th.personaChat.chat.application.dto.MessageInfo;
 import GDG4th.personaChat.chat.presentation.dto.*;
+import GDG4th.personaChat.global.annotation.SessionCheck;
 import GDG4th.personaChat.global.annotation.SessionUserId;
 import GDG4th.personaChat.global.util.ApiResponse;
 import jakarta.validation.constraints.Min;
@@ -21,6 +22,7 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatFacade chatFacade;
 
+    @SessionCheck
     @GetMapping("/{mbti}")
     public ResponseEntity<ApiResponse<List<MessageResponse>>> getChatLog(
             @RequestParam @Min(0) int startOrder,
@@ -32,6 +34,7 @@ public class ChatController {
         return new ResponseEntity<>(ApiResponse.of(messageResponses), HttpStatus.OK);
     }
 
+    @SessionCheck
     @PostMapping("/{mbti}")
     public ResponseEntity<Void> receiveChat(
             @RequestBody MessageRequest messageRequest,
@@ -42,6 +45,7 @@ public class ChatController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @SessionCheck
     @GetMapping("/open")
     public ResponseEntity<ApiResponse<ChatMask>> getClosedChat(
             @SessionUserId Long userId
@@ -51,6 +55,7 @@ public class ChatController {
         return new ResponseEntity<>(ApiResponse.of(chatMask), HttpStatus.OK);
     }
 
+    @SessionCheck
     @GetMapping("/recent")
     public ResponseEntity<ApiResponse<List<RecentChatLog>>> getRecentChat(
             @SessionUserId Long userId
@@ -59,6 +64,7 @@ public class ChatController {
         return new ResponseEntity<>(ApiResponse.of(recentChat), HttpStatus.OK);
     }
 
+    @SessionCheck
     @PostMapping("/open")
     public ResponseEntity<Void> openChat(
             @SessionUserId Long userId,
@@ -68,6 +74,7 @@ public class ChatController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @SessionCheck
     @DeleteMapping("/{mbti}/close")
     public ResponseEntity<Void> closeChat(
             @SessionUserId Long userId,
@@ -77,6 +84,7 @@ public class ChatController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @SessionCheck
     @DeleteMapping("/{mbti}/init")
     public ResponseEntity<Void> initChat(
             @SessionUserId Long userId,

@@ -5,9 +5,12 @@ import GDG4th.personaChat.auth.presentation.dto.LoginRequest;
 import GDG4th.personaChat.auth.presentation.dto.RegisterRequest;
 import GDG4th.personaChat.global.errorHandling.CustomException;
 import GDG4th.personaChat.global.errorHandling.errorCode.UserErrorCode;
+import GDG4th.personaChat.global.util.CookieUtil;
 import GDG4th.personaChat.user.application.UserService;
 import GDG4th.personaChat.user.domain.User;
 import GDG4th.personaChat.user.persistent.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,11 +31,11 @@ public class AuthService {
     public Long register(RegisterRequest request, HttpSession session) {
         String sessionId = session.getId();
 
-        verificationService.verifySession(request.email(), session);
-
         if(userRepository.existsByEmail(request.email())){
             throw CustomException.of(UserErrorCode.ALREADY_EXIST_USER);
         }
+
+        verificationService.verifySession(request.email(), session);
 
         String nickname = userService.generateUserNickname();
 
@@ -52,5 +55,17 @@ public class AuthService {
         }
 
         session.setAttribute("userId", user.getId());
+    }
+
+    public void saveSessionAndSetCookie(
+        HttpSession session,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Long userId
+    ) {
+        session.invalidate();
+        HttpSession newSession = request.getSession(true);
+        newSession.setAttribute("userId", userId);
+        CookieUtil.addSessionCookie(response, newSession.getId());
     }
 }
