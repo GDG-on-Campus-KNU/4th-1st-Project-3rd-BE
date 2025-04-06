@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @Table(name = "user")
@@ -71,5 +74,16 @@ public class User {
 
     private boolean isOpened(String mbti) {
         return (this.openedMbti & (1 << MBTI.valueOf(mbti).getNumber())) != 0;
+    }
+
+    public List<Boolean> openingMbti() {
+        List<Boolean> booleanList = new ArrayList<>();
+
+        for (int i = 15; i >= 0; i--) {
+            boolean bit = ((openedMbti >> i) & 1) == 1;
+            booleanList.add(bit);
+        }
+
+        return booleanList;
     }
 }
