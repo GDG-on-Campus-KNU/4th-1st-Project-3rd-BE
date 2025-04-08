@@ -22,8 +22,8 @@ public class ChatLogScheduler {
             int lastOrder = cache.getLastOrder();
 
             // mongoDB에 캐시 데이터 저장
-            Chat chat = chatRepository.findById(cache.getUserId()).orElseGet(
-                    () -> new Chat(cache.getUserId(), cache.getUserMBTI(), cache.getMessages())
+            Chat chat = chatRepository.findById(cache.getId()).orElseGet(
+                    () -> new Chat(cache.getId(), cache.getUserMBTI(), cache.getMessages())
             );
             // 해당 유저의 첫 로그 저장이 아닌 경우
             if(cache.getMessages().size() > MAX_CHAT_LENGTH) {
