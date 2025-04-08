@@ -1,11 +1,16 @@
 package GDG4th.personaChat.user.application;
 
+import GDG4th.personaChat.global.errorHandling.CustomException;
+import GDG4th.personaChat.global.errorHandling.errorCode.UserErrorCode;
+import GDG4th.personaChat.user.domain.User;
 import GDG4th.personaChat.user.persistent.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +24,7 @@ public class UserService {
         return (session != null && session.getAttribute("userId") != null);
     }
 
+    @Transactional(readOnly = true)
     public String generateUserNickname(){
         String nickname;
         do {
@@ -26,5 +32,59 @@ public class UserService {
         }while(userRepository.existsByNickname(nickname));
 
         return nickname;
+    }
+
+    @Transactional(readOnly = true)
+    public String getUserMbti(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.getMbti().name();
+    }
+
+    @Transactional(readOnly = true)
+    public int getUserChatMask(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.getOpenedMbti();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Boolean> getOpenList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.openingMbti();
+    }
+
+    @Transactional
+    public boolean openMbtiChat(Long userId, String mbti) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.openMbti(mbti);
+    }
+
+    @Transactional
+    public boolean closeMbtiChat(Long userId, String mbti) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.closeMbti(mbti);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isOpened(Long userId, String mbti) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.isOpened(mbti);
     }
 }
