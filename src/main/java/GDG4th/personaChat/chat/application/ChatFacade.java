@@ -44,7 +44,8 @@ public class ChatFacade {
                 String mbti = MBTI.values()[i].name();
                 String id = userId + ":" + mbti;
                 String lastChat = chatService.getLastChat(id);
-                recentChatLogs.add(RecentChatLog.of(mbti, lastChat));
+                boolean isViewed = chatService.isViewed(id);
+                recentChatLogs.add(RecentChatLog.of(mbti, lastChat, isViewed));
             }
         }
 

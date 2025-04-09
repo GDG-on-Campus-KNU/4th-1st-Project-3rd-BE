@@ -32,7 +32,7 @@ public class ChatService {
 
         // case : No chat log in this system
         if(size == 0) {
-            return new ArrayList<MessageInfo>();
+            return new ArrayList<>();
         }
 
         // case : startOrder too big
@@ -49,15 +49,24 @@ public class ChatService {
         List<Message> target = new ArrayList<>();
         if(!chatRepository.existsById(userId) && chatCacheRepository.existsById(userId)) {
             ChatCache chatCache = chatCacheRepository.findById(userId).get();
+            chatCache.statusTrue();
+            chatCacheRepository.save(chatCache);
             target.addAll(chatCache.getMessages());
         }
         else if(chatRepository.existsById(userId) && !chatCacheRepository.existsById(userId)) {
             Chat chat = chatRepository.findById(userId).get();
+            chat.statusTrue();
+            chatRepository.save(chat);
             target.addAll(chat.getMessages());
         }
         else if(chatRepository.existsById(userId) && chatCacheRepository.existsById(userId)) {
             Chat chat = chatRepository.findById(userId).get();
             ChatCache chatCache = chatCacheRepository.findById(userId).get();
+
+            chatCache.statusTrue();
+            chat.statusTrue();
+            chatCacheRepository.save(chatCache);
+            chatRepository.save(chat);
 
             target.addAll(chat.getMessages());
             target.addAll(chatCache.getMessages());
@@ -69,6 +78,7 @@ public class ChatService {
         ChatCache chatCache = chatCacheRepository.findById(userId + ":" + opponentMbti).orElseGet(
                 () -> new ChatCache(userId, userMbti, opponentMbti, new ArrayList<>())
         );
+        chatCache.statusFalse();
         int nextOrder = chatCache.getLastOrder()+1;
 
         String id = chatCache.getId();
@@ -100,6 +110,7 @@ public class ChatService {
         Chat chat = chatRepository.findById(chatCache.getId()).orElseGet(
                 () -> new Chat(
                         chatCache.getId(),
+                        chatCache.isViewed(),
                         chatCache.getUserMBTI(),
                         chatCache.getMessages()
                 )
@@ -132,5 +143,19 @@ public class ChatService {
     public void resetChatLog(String id) {
         chatCacheRepository.deleteById(id);
         chatRepository.deleteById(id);
+    }
+
+    public boolean isViewed(String id) {
+        if(chatCacheRepository.existsById(id)) {
+            ChatCache chatCache = chatCacheRepository.findById(id).get();
+            return chatCache.isViewed();
+        }
+
+        if(chatRepository.existsById(id)) {
+            Chat chat = chatRepository.findById(id).get();
+            return chat.isViewed();
+        }
+
+        return true;
     }
 }
