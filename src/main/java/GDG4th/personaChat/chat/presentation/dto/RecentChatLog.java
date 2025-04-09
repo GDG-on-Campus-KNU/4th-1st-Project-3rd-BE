@@ -5,8 +5,8 @@ public record RecentChatLog(
         String lastMessage
 ) {
     public static RecentChatLog of(String mbti, String lastMessage) {
-        if(lastMessage.isEmpty() || lastMessage == null) {
-            return null;
+        if(lastMessage == null || lastMessage.isEmpty()) {
+            return new RecentChatLog(mbti, null);
         }
         return new RecentChatLog(mbti, lastMessage);
     }

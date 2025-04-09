@@ -59,7 +59,7 @@ public class User {
     }
 
     public boolean openMbti(String mbti) {
-        if(isOpened(mbti)) {
+        if(!isOpened(mbti)) {
             this.openedMbti = openedMbti | (1 << MBTI.valueOf(mbti).getNumber());
             return true;
         }
@@ -81,7 +81,7 @@ public class User {
     public List<Boolean> openingMbti() {
         List<Boolean> booleanList = new ArrayList<>();
 
-        for (int i = 15; i >= 0; i--) {
+        for (int i = 0; i <= 15; i++) {
             boolean bit = ((openedMbti >> i) & 1) == 1;
             booleanList.add(bit);
         }

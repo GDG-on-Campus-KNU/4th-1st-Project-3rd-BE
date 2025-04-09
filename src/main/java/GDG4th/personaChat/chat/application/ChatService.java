@@ -32,7 +32,7 @@ public class ChatService {
 
         // case : No chat log in this system
         if(size == 0) {
-            return new ArrayList<>();
+            return new ArrayList<MessageInfo>();
         }
 
         // case : startOrder too big

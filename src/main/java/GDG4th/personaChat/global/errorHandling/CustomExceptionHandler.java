@@ -24,6 +24,7 @@ public class CustomExceptionHandler {
         );
         problemDetail.setTitle(exception.getErrorCode());
         problemDetail.setInstance(URI.create(request.getRequestURI()));
+        log.error(exception.getMessage(), exception);
 
         return new ResponseEntity<>(problemDetail, exception.getHttpStatus());
     }
