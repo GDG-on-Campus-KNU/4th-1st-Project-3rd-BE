@@ -16,12 +16,15 @@ public class ChatCache implements Serializable {
     @Id
     private String id;
 
+    private boolean isViewed;
+
     private String userMBTI;
 
     private List<Message> messages;
 
     public ChatCache(Long userId, String userMBTI, String opponentMBTI, List<Message> messages) {
         this.id = userId.toString() + ":" + opponentMBTI;
+        this.isViewed = true;
         this.userMBTI = userMBTI;
         this.messages = messages;
     }
@@ -40,5 +43,13 @@ public class ChatCache implements Serializable {
 
     public int getFirstOrder() {
         return messages.isEmpty() ? -1 : messages.get(0).getOrder();
+    }
+
+    public void statusTrue() {
+        this.isViewed = true;
+    }
+
+    public void statusFalse() {
+        this.isViewed = false;
     }
 }

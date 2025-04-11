@@ -16,11 +16,21 @@ public class Chat {
     @Id
     private String id;
 
+    private boolean isViewed;
+
     private String userMBTI;
 
     private List<Message> messages;
 
     public int getLastOrder() {
         return messages.isEmpty() ? -1 : messages.get(messages.size()-1).getOrder();
+    }
+
+    public void statusTrue() {
+        this.isViewed = true;
+    }
+
+    public void statusFalse() {
+        this.isViewed = false;
     }
 }
