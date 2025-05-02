@@ -4,33 +4,41 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-@Document
+@Document(collection = "chat_logs")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Chat {
     @Id
-    private String id;
+    private ObjectId id;
 
-    private boolean isViewed;
+    @Field("user_id")
+    private String userId;
 
-    private String userMBTI;
+    @Field("mbti")
+    private String mbti;
 
-    private List<Message> messages;
+    @Field("object_id")
+    private String objectId;
 
-    public int getLastOrder() {
-        return messages.isEmpty() ? -1 : messages.get(messages.size()-1).getOrder();
-    }
+    @Field("role")
+    private String role;
 
-    public void statusTrue() {
-        this.isViewed = true;
-    }
+    @Field("text")
+    private String text;
 
-    public void statusFalse() {
-        this.isViewed = false;
+    @Field("timestamp")
+    private Date timestamp;
+
+    public String changeTimeToString() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        return formatter.format(timestamp);
     }
 }
