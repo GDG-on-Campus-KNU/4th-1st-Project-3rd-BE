@@ -79,12 +79,30 @@ public class UserService {
         return user.closeMbti(mbti);
     }
 
-    @Transactional(readOnly = true)
-    public boolean isOpened(Long userId, String mbti) {
+    @Transactional
+    public void view(Long userId, String mbti) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
         );
 
-        return user.isOpened(mbti);
+        user.view(mbti);
+    }
+
+    @Transactional
+    public void notView(Long userId, String mbti) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        user.notView(mbti);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isViewed(Long userId, String mbti) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.isViewed(mbti);
     }
 }
