@@ -1,13 +1,19 @@
 package GDG4th.personaChat.user.presentation;
 
+import GDG4th.personaChat.global.annotation.SessionCheck;
+import GDG4th.personaChat.global.annotation.SessionUserId;
 import GDG4th.personaChat.global.util.ApiResponse;
+import GDG4th.personaChat.global.util.CookieUtil;
 import GDG4th.personaChat.user.application.UserService;
 import GDG4th.personaChat.user.presentation.dto.CheckSessionResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,4 +31,28 @@ public class UserController {
         CheckSessionResponse response = CheckSessionResponse.from(userService.checkSession(request));
         return new ResponseEntity<>(ApiResponse.of(response), HttpStatus.OK);
     }
+
+    @SessionCheck
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Void>> deleteUser(
+        HttpSession session,
+        HttpServletResponse response,
+        @SessionUserId Long userId
+    ) {
+        userService.deleteUser(userId);
+        session.invalidate();
+        CookieUtil.deleteCookie(response, "JSESSIONID");
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @SessionCheck
+    @GetMapping("/email")
+    public ResponseEntity<ApiResponse<String>> getUserEmail(
+        @SessionUserId Long userId
+    ) {
+        String email = userService.getUserEmail(userId);
+        return new ResponseEntity<>(ApiResponse.of(email), HttpStatus.OK);
+    }
+
 }

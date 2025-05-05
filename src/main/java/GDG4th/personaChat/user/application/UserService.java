@@ -105,4 +105,22 @@ public class UserService {
 
         return user.isViewed(mbti);
     }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        if(!userRepository.existsById(userId)){
+            throw CustomException.of(UserErrorCode.NOT_FOUND_USER);
+        }
+
+        userRepository.deleteUserById(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public String getUserEmail(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.getEmail();
+    }
 }
