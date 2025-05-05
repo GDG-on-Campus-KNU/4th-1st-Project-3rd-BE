@@ -48,5 +48,14 @@ verification:
   max_failed_attempts: ${MAX_FAILED_ATTEMPTS}
   default_expiry: ${DEFAULT_EXPIRY}
   max_chat_length : ${MAX_CHAT_LENGTH}
+
+ai:
+  url: ${AI_URL}
+
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+
 cors:
   allowed-domains: ${CORS_ALLOWED_DOMAINS}

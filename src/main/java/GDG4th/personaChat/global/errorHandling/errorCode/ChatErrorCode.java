@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 public enum ChatErrorCode implements ErrorCode{
-    LOGICAL_ERROR(HttpStatus.BAD_REQUEST, "C001", "Chat log must be even"),
-    ALREADY_OPEN(HttpStatus.BAD_REQUEST, "C002", "It's already opened"),
-    ALREADY_CLOSED(HttpStatus.BAD_REQUEST, "C003", "It's already opened"),
-    IS_NOT_OPEN_CHAT(HttpStatus.BAD_REQUEST, "C004", "that mbti chat is not opened yet");
+    ALREADY_OPEN(HttpStatus.BAD_REQUEST, "C001", "It's already opened"),
+    ALREADY_CLOSED(HttpStatus.BAD_REQUEST, "C002", "It's already opened"),
+    IS_NOT_OPEN_CHAT(HttpStatus.BAD_REQUEST, "C003", "that mbti chat is not opened yet"),
+    AI_SERVER_ERROR(HttpStatus.SERVICE_UNAVAILABLE, "C004", "AI server is not available");
 
     private HttpStatus httpStatus;
     private String code;

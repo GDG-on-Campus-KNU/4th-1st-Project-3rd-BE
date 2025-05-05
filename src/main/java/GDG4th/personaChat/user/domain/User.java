@@ -42,6 +42,9 @@ public class User {
     @Column(name="openedMbti", nullable = false)
     private int openedMbti;
 
+    @Column(name="isViewed", nullable = false)
+    private int isViewed;
+
     @Builder
     public User(
         final String email,
@@ -56,6 +59,7 @@ public class User {
         this.mbti = mbti;
         this.role = role;
         this.openedMbti = 0;
+        this.isViewed = 0;
     }
 
     public boolean openMbti(String mbti) {
@@ -87,5 +91,17 @@ public class User {
         }
 
         return booleanList;
+    }
+
+    public void view(String mbti) {
+        this.isViewed = isViewed | (1 << MBTI.valueOf(mbti).getNumber());
+    }
+
+    public void notView(String mbti) {
+        this.isViewed = isViewed & ~(1 << MBTI.valueOf(mbti).getNumber());
+    }
+
+    public boolean isViewed(String mbti) {
+        return (this.isViewed & (1 << MBTI.valueOf(mbti).getNumber())) != 0;
     }
 }
