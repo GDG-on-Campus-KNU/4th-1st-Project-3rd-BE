@@ -3,6 +3,7 @@ package GDG4th.personaChat.chat.persistent;
 import GDG4th.personaChat.chat.domain.Chat;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;

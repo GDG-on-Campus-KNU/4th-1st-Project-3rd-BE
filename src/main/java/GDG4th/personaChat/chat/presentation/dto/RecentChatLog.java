@@ -7,7 +7,7 @@ public record RecentChatLog(
 ) {
     public static RecentChatLog of(String mbti, String lastMessage, boolean isViewed) {
         if(lastMessage.isEmpty()) {
-            return new RecentChatLog(mbti, null, true);
+            return new RecentChatLog(mbti, null, isViewed);
         }
         return new RecentChatLog(mbti, lastMessage, isViewed);
     }
