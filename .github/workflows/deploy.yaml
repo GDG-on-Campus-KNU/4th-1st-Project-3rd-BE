@@ -31,4 +31,4 @@ jobs:
             
             sudo docker rm persona-chat-server
             
-            sudo docker-compose --env-file .env.dev up -d --build
+            sudo docker compose --env-file .env.dev up -d --build
