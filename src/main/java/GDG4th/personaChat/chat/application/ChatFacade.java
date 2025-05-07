@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -73,6 +74,6 @@ public class ChatFacade {
 
         return recentChatLogs.stream()
                 .sorted(Comparator.comparing((RecentChatLog log) -> log.lastChatInfo().timestamp()).reversed())
-                .toList();
+                .collect(Collectors.toList());
     }
 }
