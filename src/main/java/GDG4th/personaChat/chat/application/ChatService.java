@@ -31,7 +31,7 @@ public class ChatService {
         }
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(3000, Calendar.DECEMBER, 31); // 월은 0부터 시작
+        calendar.set(1999, Calendar.DECEMBER, 31); // 월은 0부터 시작
 
         return LastChatInfo.from(null, calendar.getTime());
     }
