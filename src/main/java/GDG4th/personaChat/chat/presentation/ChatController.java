@@ -1,6 +1,7 @@
 package GDG4th.personaChat.chat.presentation;
 
 import GDG4th.personaChat.chat.application.ChatFacade;
+import GDG4th.personaChat.chat.application.dto.RecentChatLog;
 import GDG4th.personaChat.chat.presentation.dto.*;
 import GDG4th.personaChat.global.annotation.SessionCheck;
 import GDG4th.personaChat.global.annotation.SessionUserId;
@@ -84,10 +85,12 @@ public class ChatController {
 
     @SessionCheck
     @GetMapping("/recent")
-    public ResponseEntity<ApiResponse<List<RecentChatLog>>> getRecentChat(
+    public ResponseEntity<ApiResponse<List<RecentChatLogResponse>>> getRecentChat(
             @SessionUserId Long userId
     ) {
-        List<RecentChatLog> recentChat = chatFacade.getRecentChat(userId);
+        List<RecentChatLogResponse> recentChat = chatFacade.getRecentChat(userId).stream()
+                .map(RecentChatLogResponse::of)
+                .toList();
         return new ResponseEntity<>(ApiResponse.of(recentChat), HttpStatus.OK);
     }
 }

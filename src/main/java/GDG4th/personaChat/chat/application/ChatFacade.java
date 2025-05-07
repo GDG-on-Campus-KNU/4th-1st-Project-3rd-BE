@@ -3,7 +3,7 @@ package GDG4th.personaChat.chat.application;
 import GDG4th.personaChat.ai.application.AiService;
 import GDG4th.personaChat.ai.dto.AiRequest;
 import GDG4th.personaChat.chat.presentation.dto.ChatResponse;
-import GDG4th.personaChat.chat.presentation.dto.RecentChatLog;
+import GDG4th.personaChat.chat.application.dto.RecentChatLog;
 import GDG4th.personaChat.global.errorHandling.CustomException;
 import GDG4th.personaChat.global.errorHandling.errorCode.ChatErrorCode;
 import GDG4th.personaChat.user.application.UserService;
@@ -12,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -70,6 +72,8 @@ public class ChatFacade {
             }
         }
 
-        return recentChatLogs;
+        return recentChatLogs.stream()
+                .sorted(Comparator.comparing((RecentChatLog log) -> log.lastChatInfo().timestamp()).reversed())
+                .collect(Collectors.toList());
     }
 }

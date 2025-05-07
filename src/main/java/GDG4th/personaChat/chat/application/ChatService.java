@@ -1,11 +1,13 @@
 package GDG4th.personaChat.chat.application;
 
+import GDG4th.personaChat.chat.application.dto.LastChatInfo;
 import GDG4th.personaChat.chat.domain.Chat;
 import GDG4th.personaChat.chat.persistent.ChatRepository;
 import GDG4th.personaChat.chat.presentation.dto.ChatResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,13 +24,16 @@ public class ChatService {
         return chats.stream().map(ChatResponse::of).toList();
     }
 
-    public String getLastChatLog(Long userId, String mbti) {
+    public LastChatInfo getLastChatLog(Long userId, String mbti) {
         Optional<Chat> lastChatLog = chatRepository.findFirstByUserIdAndMbtiOrderByTimestampDesc(userId.toString(), mbti);
         if(lastChatLog.isPresent()) {
-            return lastChatLog.get().getText();
+            return LastChatInfo.from(lastChatLog.get().getText(), lastChatLog.get().getTimestamp());
         }
 
-        return "";
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(3000, Calendar.DECEMBER, 31); // 월은 0부터 시작
+
+        return LastChatInfo.from(null, calendar.getTime());
     }
 
     public void deleteChatLog(Long userId, String mbti) {
