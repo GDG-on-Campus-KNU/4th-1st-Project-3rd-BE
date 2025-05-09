@@ -2,6 +2,7 @@ package GDG4th.personaChat.chat.application;
 
 import GDG4th.personaChat.ai.application.AiService;
 import GDG4th.personaChat.ai.dto.AiRequest;
+import GDG4th.personaChat.ai.dto.AiResponse;
 import GDG4th.personaChat.chat.presentation.dto.ChatResponse;
 import GDG4th.personaChat.chat.application.dto.RecentChatLog;
 import GDG4th.personaChat.global.errorHandling.CustomException;
@@ -9,6 +10,7 @@ import GDG4th.personaChat.global.errorHandling.errorCode.ChatErrorCode;
 import GDG4th.personaChat.user.application.UserService;
 import GDG4th.personaChat.user.domain.MBTI;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ChatFacade {
@@ -25,8 +28,13 @@ public class ChatFacade {
     private final AiService aiService;
 
     public void chatRequest(Long userId, String mbti, String text) {
+        chatService.saveChatLog(userId, mbti, text, "user");
+
         AiRequest aiRequest = AiRequest.from(userId.toString(), mbti, text);
-        aiService.messageToAiServer(aiRequest);
+        AiResponse aiResponse = aiService.messageToAiServer(aiRequest);
+        log.info(aiResponse.response());
+
+        chatService.saveChatLog(userId, mbti, aiResponse.response(), "bot");
         userService.notView(userId, mbti);
     }
 
