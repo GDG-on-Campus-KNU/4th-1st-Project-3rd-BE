@@ -28,11 +28,14 @@ public class ChatFacade {
     private final AiService aiService;
 
     public void chatRequest(Long userId, String mbti, String text) {
+        if(!userService.isOpenedChat(userId, mbti)) {
+            throw CustomException.of(ChatErrorCode.IS_NOT_OPEN_CHAT);
+        }
+
         chatService.saveChatLog(userId, mbti, text, "user");
 
         AiRequest aiRequest = AiRequest.from(userId.toString(), mbti, text);
         AiResponse aiResponse = aiService.messageToAiServer(aiRequest);
-        log.info(aiResponse.response());
 
         chatService.saveChatLog(userId, mbti, aiResponse.response(), "bot");
         userService.notView(userId, mbti);
