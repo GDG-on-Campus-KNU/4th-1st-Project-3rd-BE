@@ -19,6 +19,7 @@ spring:
       password: ${REDIS_PASSWORD}
     mongodb:
       uri: ${MONGO_URI}
+      auto-index-creation: true
   jpa:
     show-sql: true
     hibernate:
