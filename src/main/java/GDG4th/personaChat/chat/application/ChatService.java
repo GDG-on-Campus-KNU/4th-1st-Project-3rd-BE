@@ -17,6 +17,11 @@ import java.util.Optional;
 public class ChatService {
     private final ChatRepository chatRepository;
 
+    public void saveChatLog(Long userId, String mbti, String text, String role) {
+        Chat chat = new Chat(userId, mbti, text, role);
+        chatRepository.save(chat);
+    }
+
     public List<ChatResponse> getAllChatLog(Long userId, String mbti, Date timestamp) {
         List<Chat> chats = chatRepository.findByUserIdAndMbtiAndTimestampAfter(
                 userId.toString(), mbti, timestamp

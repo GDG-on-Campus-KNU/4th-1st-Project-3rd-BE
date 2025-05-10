@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 @Document(collection = "chat_logs")
@@ -36,6 +37,15 @@ public class Chat {
 
     @Field("timestamp")
     private Date timestamp;
+
+    public Chat(Long userId, String mbti, String text, String role) {
+        this.userId = userId.toString();
+        this.mbti = mbti;
+        this.objectId = userId + "_" + mbti;
+        this.role = role;
+        this.text = text;
+        this.timestamp = Date.from(Instant.now());
+    }
 
     public String changeTimeToString() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

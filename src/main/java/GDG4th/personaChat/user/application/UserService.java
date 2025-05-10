@@ -53,6 +53,15 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public boolean isOpenedChat(Long userId, String mbti) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.isOpened(mbti);
+    }
+
+    @Transactional(readOnly = true)
     public List<Boolean> getOpenList(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
