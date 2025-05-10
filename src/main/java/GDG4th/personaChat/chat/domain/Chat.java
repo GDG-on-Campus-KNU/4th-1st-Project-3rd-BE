@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,6 +18,9 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@CompoundIndexes({
+        @CompoundIndex(name = "user_mbti_time_idx", def = "{'user_id': 1, 'mbti': 1, 'timestamp': 1}")
+})
 public class Chat {
     @Id
     private ObjectId id;
