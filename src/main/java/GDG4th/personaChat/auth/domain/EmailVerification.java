@@ -17,7 +17,7 @@ import java.util.Random;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@RedisHash(value = "EmailVerification", timeToLive = 60) // TTL: 5분
+@RedisHash(value = "EmailVerification", timeToLive = 540) // TTL: 5분
 public class EmailVerification implements Serializable {
 
     @Id
