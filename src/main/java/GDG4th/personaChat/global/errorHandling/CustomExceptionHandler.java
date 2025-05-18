@@ -1,6 +1,8 @@
 package GDG4th.personaChat.global.errorHandling;
 
+import GDG4th.personaChat.error.application.ErrorTraceService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -12,7 +14,10 @@ import java.net.URI;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class CustomExceptionHandler {
+    private final ErrorTraceService errorTraceService;
+
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ProblemDetail> handleCustomException(
             HttpServletRequest request,
@@ -24,8 +29,8 @@ public class CustomExceptionHandler {
         );
         problemDetail.setTitle(exception.getErrorCode());
         problemDetail.setInstance(URI.create(request.getRequestURI()));
-        log.error(exception.getMessage(), exception);
-
+        log.error(exception.getMessage(), exception.getErrorCode());
+        errorTraceService.saveErrorTrace(exception, request.getRequestURI());
         return new ResponseEntity<>(problemDetail, exception.getHttpStatus());
     }
 
@@ -41,6 +46,7 @@ public class CustomExceptionHandler {
         problemDetail.setTitle("E999");
         problemDetail.setInstance(URI.create(request.getRequestURI()));
         log.error(exception.getMessage(), exception);
+        errorTraceService.saveErrorTrace(exception, request.getRequestURI());
 
         return new ResponseEntity<>(problemDetail, HttpStatus.INTERNAL_SERVER_ERROR);
     }
