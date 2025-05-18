@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="KR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>채팅 관리 페이지</title>
+  <link rel="stylesheet" href="/css/chat.css">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/chat.js"></script>
+</head>
+
+<body>
+<div class="header" id="header">
+  <a href="/admin" class="admin-link">Persona Chat</a>
+</div>
+
+<h1>채팅 관리 페이지</h1>
+
+<table id="member-table">
+  <thead>
+  <tr>
+    <th scope="col">Id</th>
+    <th scope="col">Email</th>
+    <th scope="col">MBTI</th>
+    <th scope="col">Role</th>
+    <th scope="col">ChatLog</th>
+  </tr>
+  </thead>
+  <tbody id="member-tbody">
+  <!-- AJAX를 통해 데이터를 로드 -->
+  </tbody>
+</table>
+<div>
+  <button id="prevPage">Prev</button>
+  <button id="search" onclick="getMembers(currentPage)">조회</button>
+  <button id="nextPage">Next</button>
+</div>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h2>채팅 로그</h2>
+    <table id="chat-table">
+      <thead>
+      <tr>
+        <th scope="col">Time</th>
+        <th scope="col">Content</th>
+        <th scope="col">Role</th>
+      </tr>
+      </thead>
+      <tbody id="chat-tbody">
+      <!-- AJAX를 통해 데이터를 로드 -->
+      </tbody>
+    </table>
+    <div>
+      <button id="c-prevPage">Prev</button>
+      <button id="c-search" onclick="getChats(modalCurrentPage, targetUser)">조회</button>
+      <button id="c-nextPage">Next</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
