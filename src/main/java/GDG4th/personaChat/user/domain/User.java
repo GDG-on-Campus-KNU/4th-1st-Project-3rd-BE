@@ -104,4 +104,8 @@ public class User {
     public boolean isViewed(String mbti) {
         return (this.isViewed & (1 << MBTI.valueOf(mbti).getNumber())) != 0;
     }
+
+    public void granting() {
+        this.role = this.role.name().equals("ADMIN") ? UserRole.USER : UserRole.ADMIN;
+    }
 }
