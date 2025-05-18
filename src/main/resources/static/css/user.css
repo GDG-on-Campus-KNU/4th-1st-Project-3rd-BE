@@ -1,0 +1,111 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    color: #2e8b57; /* Dark green */
+    margin-top: 20px;
+    text-align: center;
+}
+
+table {
+    width: 80%;
+    max-width: 900px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table thead tr {
+    background-color: #3cb371; /* Medium sea green */
+    color: white;
+    text-align: left;
+}
+
+table th,
+table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+table tr:last-child td {
+    border-bottom: none;
+}
+
+button {
+    background-color: #3cb371; /* Medium sea green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2e8b57; /* Dark green */
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+div {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+a {
+    color: #3cb371; /* Medium sea green */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #2e8b57; /* Dark green */
+}
+
+.header {
+    width: 100%;
+    height: 60px;
+    background-color: #3cb371;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 0 20px;
+}
+
+/* 좌측 텍스트 링크 스타일 */
+.admin-link {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: opacity 0.2s ease;
+}
+
+.admin-link:hover {
+    opacity: 0.8;
+}
