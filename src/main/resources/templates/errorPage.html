@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="KR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>에러 로그 페이지</title>
+    <link rel="stylesheet" href="/css/error.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/error.js"></script>
+</head>
+
+<body>
+<div class="header" id="header">
+    <a href="/admin" class="admin-link">Persona Chat</a>
+</div>
+
+<h1>에러 로그 페이지</h1>
+
+<table id="error-table">
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">URI</th>
+        <th scope="col">Code</th>
+        <th scope="col">Type</th>
+        <th scope="col">Time</th>
+        <th scope="col">Detail</th>
+    </tr>
+    </thead>
+    <tbody id="error-tbody">
+    <!-- AJAX를 통해 데이터를 로드 -->
+    </tbody>
+</table>
+<div>
+    <button id="prevPage">Prev</button>
+    <button id="search" onclick="getErrors(currentPage)">조회</button>
+    <button id="delete" onclick="deleteAllErrorLogs()">삭제</button>
+    <button id="nextPage">Next</button>
+</div>
+
+<div id="modal" class="modal">
+    <div id="modal-content" class="modal-content">
+    </div>
+</div>
+</body>
+</html>
