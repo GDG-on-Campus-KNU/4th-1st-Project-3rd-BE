@@ -35,6 +35,7 @@ window.onclick = function (event) {
 
 function openModal(id) {
     targetUser = id;
+    modalCurrentPage = 0;
     getChats(modalCurrentPage, targetUser);
     document.getElementById("modal").style.display = "block";
 }
