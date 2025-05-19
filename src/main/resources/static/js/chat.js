@@ -99,7 +99,7 @@ function getChats(page, id){
                     `;
                 tbody.append(row);
 
-                currentPage = data.number;
+                modalCurrentPage = data.number;
 
                 $('#c-prevPage').prop('disabled', data.first);
                 $('#c-nextPage').prop('disabled', data.last);
