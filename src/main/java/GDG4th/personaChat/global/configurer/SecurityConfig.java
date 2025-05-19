@@ -37,7 +37,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOriginPatterns(List.of("http://localhost:5173","https://dev.personachat.my", "https://d3qjn212wli973.cloudfront.net"));
+        config.setAllowedOriginPatterns(List.of("http://localhost:5173","https://dev.personachat.my", "https://api.personachat.my", "https://d3qjn212wli973.cloudfront.net"));
         // 허용할 HTTP 메서드 설정
         config.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
 
