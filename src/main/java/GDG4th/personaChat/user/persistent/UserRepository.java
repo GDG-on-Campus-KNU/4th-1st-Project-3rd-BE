@@ -1,6 +1,8 @@
 package GDG4th.personaChat.user.persistent;
 
 import GDG4th.personaChat.user.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByNickname(String nickname);
 
     void deleteUserById(Long userId);
+
+    Page<User> findAll(Pageable pageable);
 }

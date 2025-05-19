@@ -1,0 +1,85 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9; /* 연한 회색 */
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    color: #3cb371; /* Medium sea green */
+    margin-bottom: 20px;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.form-inline {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #3cb371; /* Medium sea green */
+    outline: none;
+}
+
+input[type="button"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #3cb371; /* Medium sea green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="button"]:hover {
+    background-color: #2e8b57; /* Dark green */
+}
+
+input[type="button"]:active {
+    background-color: #26734d; /* Darker green */
+}
+
+input[type="button"]:focus {
+    outline: none;
+}
+
+@media screen and (max-width: 400px) {
+    .container {
+        width: 90%; /* 작은 화면에서는 폭을 줄임 */
+    }
+}

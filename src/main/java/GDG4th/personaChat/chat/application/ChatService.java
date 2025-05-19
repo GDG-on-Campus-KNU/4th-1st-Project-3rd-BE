@@ -5,6 +5,8 @@ import GDG4th.personaChat.chat.domain.Chat;
 import GDG4th.personaChat.chat.persistent.ChatRepository;
 import GDG4th.personaChat.chat.presentation.dto.ChatResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -43,5 +45,9 @@ public class ChatService {
 
     public void deleteChatLog(Long userId, String mbti) {
         chatRepository.deleteAllByUserIdAndMbti(userId.toString(), mbti);
+    }
+
+    public Page<ChatResponse> getAllChatLogByUserId(Long userId , Pageable pageable) {
+        return chatRepository.findChatsByUserId(userId.toString(), pageable).map(ChatResponse::of);
     }
 }

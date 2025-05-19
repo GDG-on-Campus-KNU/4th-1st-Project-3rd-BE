@@ -1,7 +1,6 @@
 package GDG4th.personaChat.chat.presentation;
 
 import GDG4th.personaChat.chat.application.ChatFacade;
-import GDG4th.personaChat.chat.application.dto.RecentChatLog;
 import GDG4th.personaChat.chat.presentation.dto.*;
 import GDG4th.personaChat.global.annotation.SessionCheck;
 import GDG4th.personaChat.global.annotation.SessionUserId;

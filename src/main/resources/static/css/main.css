@@ -1,0 +1,90 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.card {
+    display: block;
+    width: 220px;
+    background: white;
+    padding: 30px 20px;
+    border-radius: 16px;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    border: 1px solid #ddd;
+}
+
+.card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+}
+
+.card .icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: #2e7d32;
+}
+
+.card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #2e7d32;
+}
+
+.card p {
+    font-size: 14px;
+    color: #666;
+}
+
+h1 {
+    color: #2e8b57; /* Dark green */
+    margin-top: 40px;
+    margin-bottom: 80px;
+    text-align: center;
+}
+
+.header {
+    width: 100%;
+    height: 60px;
+    background-color: #3cb371;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 0 20px;
+}
+
+/* 좌측 텍스트 링크 스타일 */
+.admin-link {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: opacity 0.2s ease;
+}
+
+.admin-link:hover {
+    opacity: 0.8;
+}

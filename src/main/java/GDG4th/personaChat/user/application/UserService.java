@@ -2,11 +2,15 @@ package GDG4th.personaChat.user.application;
 
 import GDG4th.personaChat.global.errorHandling.CustomException;
 import GDG4th.personaChat.global.errorHandling.errorCode.UserErrorCode;
+import GDG4th.personaChat.user.application.dto.UserInfo;
 import GDG4th.personaChat.user.domain.User;
+import GDG4th.personaChat.user.domain.UserRole;
 import GDG4th.personaChat.user.persistent.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -131,5 +135,28 @@ public class UserService {
         );
 
         return user.getEmail();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserInfo> getAllUserInfos(Pageable pageable) {
+        return userRepository.findAll(pageable).map(UserInfo::from);
+    }
+
+    @Transactional
+    public void granting(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        user.granting();
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isAdmin(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> CustomException.of(UserErrorCode.NOT_FOUND_USER)
+        );
+
+        return user.getRole() == UserRole.ADMIN;
     }
 }
