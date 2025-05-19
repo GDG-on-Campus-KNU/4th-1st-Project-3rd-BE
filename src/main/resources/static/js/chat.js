@@ -89,7 +89,7 @@ function getChats(page, id){
             // 데이터에 따라 테이블 행을 생성
             contents.forEach(function(chat) {
                 // 한 행의 내용
-                var role = chat.isUserChat === true ? 'USER' : 'ADMIN';
+                var role = chat.isUserChat === true ? 'USER' : 'BOT';
                 var row = `
                         <tr>
                             <td>${chat.time}</td>
@@ -101,8 +101,8 @@ function getChats(page, id){
 
                 currentPage = data.number;
 
-                $('#prevPage').prop('disabled', data.first);
-                $('#nextPage').prop('disabled', data.last);
+                $('#c-prevPage').prop('disabled', data.first);
+                $('#c-nextPage').prop('disabled', data.last);
             });
         },
         error: function(err) {
