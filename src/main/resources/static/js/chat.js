@@ -18,12 +18,12 @@ $(document).ready(function() {
 
     $('#c-prevPage').click(function() {
         if (modalCurrentPage > 0) {
-            getMembers(modalCurrentPage - 1);
+            getChats(modalCurrentPage - 1, targetUser);
         }
     });
 
     $('#c-nextPage').click(function() {
-        getMembers(modalCurrentPage + 1);
+        getChats(modalCurrentPage + 1, targetUser);
     });
 });
 
