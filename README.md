@@ -39,12 +39,15 @@
 > [**_FrontEnd_**](https://github.com/GDG-on-Campus-KNU/4th-1st-Project-3rd-FE)
 
 ## 프로젝트 주요 기능
+<img width="958" height="671" alt="Persona Chat" src="https://github.com/user-attachments/assets/70c3ce8b-1f86-49f4-ac6f-d30507831b24" />
+
 **1. 로그인 및 회원가입 기능**
 - 세션을 이용한 자체 로그인 기능 구현
 - Interceptor를 이용한 인증 및 인가 기능
 
 **2. 채팅 기능**
 - 16개의 MBTI 별로 채팅방을 시작하고 자유롭게 대화할 수 있습니다.
+
   
 **3. 얼굴 기반 MBTI 판별 기능**
 - 사용자 얼굴 사진 데이터를 통해 학습된 AI가 사용자의 MBTI를 추론해줍니다.
@@ -56,15 +59,18 @@
 
 **ERD**
 
-![erd.png](image/erd.png)
+<img width="312" height="378" alt="image" src="https://github.com/user-attachments/assets/a99d25aa-1a69-439a-979c-50157edc5fde" />
+
 
 **Architecture**
 
-![img.png](image/arch.png)
+<img width="982" height="404" alt="image" src="https://github.com/user-attachments/assets/87b94579-a3f8-4185-a8b9-a805ee3f4ea7" />
+
 
 **Git Flow**
 
-![git_flow.png](image/git_flow.png)
+<img width="1065" height="364" alt="image" src="https://github.com/user-attachments/assets/9f436f65-a9ab-4c23-98d5-faeab4b8588e" />
+
 
 ## 기술 스택
 > Framework
@@ -90,3 +96,4 @@
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)
 ![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)
+![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)
